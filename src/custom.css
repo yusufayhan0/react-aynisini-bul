@@ -1,0 +1,79 @@
+html,
+body {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+}
+
+.app-container {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.app-game-container {
+    perspective: 30em;
+
+    flex-wrap: wrap;
+    padding: 10px;
+    display: flex;
+    border-radius: 10px;
+    width: 43%;
+    height: 600px;
+    border: 1px solid #000;
+    justify-content: space-around;
+}
+
+
+
+
+
+
+
+.square-container {
+    border-radius: 5px;
+    cursor: pointer;
+    width: 15%;
+    height: 15.3%;
+    perspective: 30em;
+}
+
+.square-own-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border-radius: 5px;
+    transition: transform 0.5s;
+    transform-style: preserve-3d;
+}
+
+.common {
+    position: absolute;
+    backface-visibility: hidden;
+}
+
+
+.div-rotate {
+    width: 100%;
+    height: 100%;
+    border-radius: 5px;
+}
+
+.img-rotate {
+    /* border: 1px solid #000; */
+    /**/
+    width: 100%;
+    height: 100%;
+    transform: rotateY(180deg);
+}
+
+
+
+.square-own-show {
+    transform: rotateY(180deg)
+}
+
+.square-own-hide {
+    transform: rotateY(0deg)
+}
