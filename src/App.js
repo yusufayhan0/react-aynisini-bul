@@ -30,6 +30,7 @@ function App() {
   const [stateCount, setStateCount] = useState(0)
   const refTime = useRef()
   const [buttonShow, setButtonShow] = useState(true)
+  const [finishState, setFinishState] = useState(false)
 
   const ref = useRef(1)
   const count = [];
@@ -59,6 +60,12 @@ function App() {
   const handleFinish = () => {
     clearInterval(refTime.current)
     setButtonShow(true)
+    setFinishState(true)
+    setTimeout(() => {
+      setImage(imageCreate())
+    }, 250);
+
+
   }
 
   function setTime() {
@@ -189,6 +196,8 @@ function App() {
   }
 
   const imageCreate = () => {
+    imageCountHistory = Array(19).fill(0)
+    imageHistory = []
     let imageNo
     let imageName
     let isImage
@@ -205,12 +214,17 @@ function App() {
       }
 
     }
+    console.log("imageHistory-imageHistory", imageHistory)
     return imageHistory
   }
 
   useEffect(() => {
     setImage(imageCreate())
   }, [])
+
+  useEffect(() => {
+    console.log("image-image", image)
+  }, [image])
 
   const handleDifficulty = (e) => {
     setSettings(setting => ({ ...setting, difficulty: e.target.value }))
@@ -231,13 +245,13 @@ function App() {
     <div className="app-container">
       <div className="app-game-container">
         {
-          buttonShow&&<div className="app-game-floor"></div>
+          //buttonShow&&<div className="app-game-floor"></div>
         }
-          {
-            getSquare.map((index) => {
-              return <Square key={index} gamesettings={settings} indexNo={index} idNo={image[index]} imagepath={imageList[image[index]]} hideShow={hideShow} tempSq={tempSq} />
-            })
-          }
+        {
+          getSquare.map((index) => {
+            return <Square key={index} gamesettings={settings} setFinish={setFinishState} finish={finishState} indexNo={index} idNo={image[index]} imagepath={imageList[image[index]]} hideShow={hideShow} tempSq={tempSq} />
+          })
+        }
       </div>
       <div className="settings-container">
         <div>

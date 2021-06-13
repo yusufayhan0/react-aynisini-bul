@@ -11,7 +11,7 @@ function Square(props) {
 
     const { hideShow } = props
     const [getcolor, setColor] = useState("#444")
-    const [isShow, setisShow] = useState(false)
+    const [isShow, setisShow] = useState(true)
     const [change, setChange] = useState(false)
     const [showClass, setShowClass] = useState("square-own-hide")//square-own-hide
     let color = "#"
@@ -25,15 +25,22 @@ function Square(props) {
     }
 
     useEffect(() => {
-        //createColor()
-    }, [])
+        if (props.finish) {
+            setShowClass("square-own-hide")
+            props.setFinish(false)
+        }
+    }, [props.finish])
+
+    useEffect(() => {
+        setShowClass("square-own-hide")
+    }, [props.imagepath])
 
     useEffect(() => {
 
         if (gamesettings.difficulty !== "1") {
             createColor()
         }
-        else{
+        else {
             setColor("#444")
         }
 
@@ -47,7 +54,7 @@ function Square(props) {
                 if (gamesettings.difficulty === "2") {
                     createColor()
                 }
-                setisShow(false)
+                setisShow(true)
             }
         }
         if (gamesettings.difficulty === "3") {
@@ -55,23 +62,20 @@ function Square(props) {
         }
     }, [hideShow])
 
+
+
     const show = () => {
-        if (isShow) {
-            setShowClass("square-own-hide")
-            setisShow(false)
-        } else {
-            setShowClass("square-own-show")
-            setisShow(true)
-        }
+        setShowClass("square-own-show")
+        setisShow(false)
     }
 
     return (
         <div className="square-container" onClick={() => {
             show()
-            props.tempSq(props.indexNo, props.idNo)
+            isShow && props.tempSq(props.indexNo, props.idNo)
         }}>
             <div className={"square-own-container " + showClass}>
-                <div className="common div-rotate" style={{ backgroundColor: getcolor,transition:"300ms all" }}></div>
+                <div className="common div-rotate" style={{ backgroundColor: getcolor, transition: "300ms all" }}></div>
                 <div className="common img-rotate">
                     <img src={"../images/" + props.imagepath} alt="" width="100%" height="100%" />
                 </div>
