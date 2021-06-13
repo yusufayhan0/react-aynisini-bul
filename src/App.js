@@ -15,7 +15,21 @@ function App() {
     difficulty: "1"
   })
   const [gamerLine, setGamerLine] = useState("1")
-  const [scoreBoard, setScoreBoard] = useState([])
+  const [scoreBoard, setScoreBoard] = useState({
+    oyuncu1: {
+      toplam: 0,
+      basarili: 0
+    },
+    oyuncu2: {
+      toplam: 0,
+      basarili: 0
+    }
+  })
+  const [moveCount, setMoveCount] = useState(0)
+  const [timeState, setTimeState] = useState([])
+  const [stateCount, setStateCount] = useState(0)
+  const refTime = useRef()
+  const [buttonShow, setButtonShow] = useState(true)
 
   const ref = useRef(1)
   const count = [];
@@ -26,7 +40,7 @@ function App() {
     }
   }, [])
 
-  useLayoutEffect(() => {
+  useLayoutEffect(function () {
     setSettings({
       gamercount: "1",
       difficulty: "1"
@@ -35,22 +49,96 @@ function App() {
     setSquare(count)
   }, [])
 
+  const handleStart = () => {
+    setStateCount(0)
+    setMoveCount(0)
+    refTime.current = setInterval(setTime, 1000);
+    setButtonShow(false)
+  }
+
+  const handleFinish = () => {
+    clearInterval(refTime.current)
+    setButtonShow(true)
+  }
+
+  function setTime() {
+    setStateCount(value => value + 1);
+
+  }
+
+  useEffect(() => {
+    setTimeState(value => [value[0], pad(stateCount % 60)])
+    setTimeState(value => [pad(parseInt(stateCount / 60)), value[1]])
+  }, [stateCount])
+
+  function pad(val) {
+    var valString = val + "";
+    if (valString.length < 2) {
+      return "0" + valString;
+    } else {
+      return valString;
+    }
+  }
+
 
 
   useEffect(() => {
     if (tempSquare.length > 0) {
       if (tempSquare[3] !== -1) {
         if (tempSquare[2] === tempSquare[3]) {
-          console.log("10 puan daha kazandınız")
+          if (settings.gamercount === "2") {
+            setTimeout(() => {
+              if (gamerLine === "1") {
+                setGamerLine("2")
+                setScoreBoard(value => ({
+                  ...value, oyuncu1: {
+                    ...value.oyuncu1,
+                    basarili: value.oyuncu1.basarili + 1
+                  }
+                }))
+              }
+              else {
+                setGamerLine("1")
+                setScoreBoard(value => ({
+                  ...value, oyuncu2: {
+                    ...value.oyuncu2,
+                    basarili: value.oyuncu2.basarili + 1
+                  }
+                }))
+              }
+
+            }, 700);
+          }
         }
         else {
           setTimeout(() => {
             setHideShow(value => [value[0] + 1, tempSquare[0], tempSquare[1]])
           }, 700);
         }
-        setTimeout(() => {
-          gamerLine === "1" ? setGamerLine("2") : setGamerLine("1")
-        }, 700);
+        if (settings.gamercount === "2") {
+          setTimeout(() => {
+            if (gamerLine === "1") {
+              setGamerLine("2")
+              setScoreBoard(value => ({
+                ...value, oyuncu1: {
+                  ...value.oyuncu1,
+                  toplam: value.oyuncu1.toplam + 1
+                }
+              }))
+            }
+            else {
+              setGamerLine("1")
+              setScoreBoard(value => ({
+                ...value, oyuncu2: {
+                  ...value.oyuncu2,
+                  toplam: value.oyuncu2.toplam + 1
+                }
+              }))
+            }
+
+          }, 700);
+        }
+        setMoveCount(move => move + 1)
       }
 
     }
@@ -58,6 +146,10 @@ function App() {
       setHideShow([0, -1, -1])
     }
   }, [tempSquare])
+
+  useEffect(() => {
+    console.log("scoreBoard", scoreBoard)
+  }, [scoreBoard])
 
   const imageList = [
     "",
@@ -133,28 +225,33 @@ function App() {
     setSettings(setting => ({ ...setting, gamercount: e.target.value }))
   }
 
+
+
   return (
     <div className="app-container">
-
-
-
       <div className="app-game-container">
         {
-          getSquare.map((index) => {
-
-            return <Square key={index} gamesettings={settings} indexNo={index} idNo={image[index]} imagepath={imageList[image[index]]} hideShow={hideShow} tempSq={tempSq} />
-          })
+          buttonShow&&<div className="app-game-floor"></div>
         }
+          {
+            getSquare.map((index) => {
+              return <Square key={index} gamesettings={settings} indexNo={index} idNo={image[index]} imagepath={imageList[image[index]]} hideShow={hideShow} tempSq={tempSq} />
+            })
+          }
       </div>
       <div className="settings-container">
-
         <div>
           {
             settings.gamercount === "1"
               ? <p>Tek Oyuncu</p>
-              : <p>{gamerLine} Oyuncu</p>
+              : <p>{gamerLine}. Oyuncu</p>
           }
-
+        </div>
+        <div style={{ height: settings.gamercount === "2" ? "75px" : "0px", position: "relative", opacity: settings.gamercount === "2" ? "1" : "0" }}>
+          <span style={{ position: "absolute" }}>
+            <p>1. Oyuncu : {scoreBoard.oyuncu1.basarili}</p>
+            <p>2. Oyuncu : {scoreBoard.oyuncu2.basarili}</p>
+          </span>
         </div>
 
         <p>Zorluk Derecesi</p>
@@ -168,11 +265,20 @@ function App() {
         </div>
         <p>Oyuncu sayısı</p>
         <div>
-          <input type="radio" id="gamer1" onChange={handleGamerCount} name="gamercount" value="1" defaultChecked />
+          <input type="radio" id="gamer1" disabled={!buttonShow} onChange={handleGamerCount} name="gamercount" value="1" defaultChecked />
           <label for="gamer1">Tek Kişilik</label>
-          <input type="radio" id="gamer2" onChange={handleGamerCount} name="gamercount" value="2" />
+          <input type="radio" id="gamer2" disabled={!buttonShow} onChange={handleGamerCount} name="gamercount" value="2" />
           <label for="gamer2">2 Kişilik</label>
         </div>
+        <div>
+          <p>{timeState[0]} : {timeState[1]}</p>
+          <p>Hamle Sayısı : {moveCount}</p>
+        </div>
+        {
+          buttonShow
+            ? <button onClick={handleStart}>Başla</button>
+            : <button onClick={handleFinish}>Bitir</button>
+        }
       </div>
     </div>
   );
