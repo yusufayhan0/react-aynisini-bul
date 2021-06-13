@@ -3,9 +3,10 @@ body {
     margin: 0;
     padding: 0;
     height: 100vh;
+    background-color: #444;
 }
 
-.app-container {
+.app-container {    
     height: 100vh;
     display: flex;
     justify-content: center;
@@ -14,7 +15,7 @@ body {
 
 .app-game-container {
     perspective: 30em;
-
+    background-color: white;
     flex-wrap: wrap;
     padding: 10px;
     display: flex;
@@ -76,4 +77,66 @@ body {
 
 .square-own-hide {
     transform: rotateY(0deg)
+}
+
+
+
+.settings-container {
+    padding: 10px 20px;
+    width: 250px;
+    border: 1px solid #fff;
+    margin-left: 50px;
+    border-radius: 10px;
+    background-color: #444;
+}
+
+.settings-container p{
+    color: white;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.settings-container p:nth-child(1){
+    font-size: 30px;
+}
+
+.settings-container div{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    height: 90px;
+    margin-bottom: 20px;
+    width: 100%;
+    border:1px solid #fff;
+}
+
+.settings-container div label{
+    color: white;
+    margin-top: 4px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 15px;    
+    transition: 300ms all;
+}
+
+.settings-container div label:hover{
+    color: #bbb;
+}
+
+.settings-container div:nth-child(3) label{
+    margin-left: -30px;
+}
+
+.settings-container div:nth-child(5) label{
+    margin-left: -40px;
+}
+
+
+
+
+
+.settings-container div input,label{
+    cursor: pointer;
+}
+
+.settings-container div:nth-child(2){
+    margin-bottom: 0px;
 }
