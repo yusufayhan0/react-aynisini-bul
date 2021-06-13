@@ -31,9 +31,17 @@ function App() {
   const refTime = useRef()
   const [buttonShow, setButtonShow] = useState(true)
   const [finishState, setFinishState] = useState(false)
+  const [gameFinish, setGameFinish] = useState(["", ""])
+
 
   const ref = useRef(1)
+  const scoreCount = useRef(0)
   const count = [];
+
+  const defaultSettings = () => {
+
+  }
+
   useEffect(() => {
     let i = 0;
     for (let index = 0; index < 36; index++) {
@@ -61,6 +69,7 @@ function App() {
     clearInterval(refTime.current)
     setButtonShow(true)
     setFinishState(true)
+    setGameFinish(["finish-modal-show", "finish-modal-message-show"])
     setTimeout(() => {
       setImage(imageCreate())
     }, 250);
@@ -100,7 +109,8 @@ function App() {
                 setScoreBoard(value => ({
                   ...value, oyuncu1: {
                     ...value.oyuncu1,
-                    basarili: value.oyuncu1.basarili + 1
+                    basarili: value.oyuncu1.basarili + 1,
+                    toplam: value.oyuncu1.toplam + 1
                   }
                 }))
               }
@@ -109,42 +119,52 @@ function App() {
                 setScoreBoard(value => ({
                   ...value, oyuncu2: {
                     ...value.oyuncu2,
-                    basarili: value.oyuncu2.basarili + 1
+                    basarili: value.oyuncu2.basarili + 1,
+                    toplam: value.oyuncu1.toplam + 1
                   }
                 }))
               }
 
             }, 700);
           }
+          else {
+            setScoreBoard(value => ({
+              ...value, oyuncu1: {
+                ...value.oyuncu1,
+                toplam: value.oyuncu1.toplam + 1
+              }
+            }))
+          }
         }
         else {
+          if (settings.gamercount === "2") {
+            setTimeout(() => {
+              if (gamerLine === "1") {
+                setGamerLine("2")
+                setScoreBoard(value => ({
+                  ...value, oyuncu1: {
+                    ...value.oyuncu1,
+                    toplam: value.oyuncu1.toplam + 1
+                  }
+                }))
+              }
+              else {
+                setGamerLine("1")
+                setScoreBoard(value => ({
+                  ...value, oyuncu2: {
+                    ...value.oyuncu2,
+                    toplam: value.oyuncu2.toplam + 1
+                  }
+                }))
+              }
+
+            }, 700);
+          }
           setTimeout(() => {
             setHideShow(value => [value[0] + 1, tempSquare[0], tempSquare[1]])
           }, 700);
         }
-        if (settings.gamercount === "2") {
-          setTimeout(() => {
-            if (gamerLine === "1") {
-              setGamerLine("2")
-              setScoreBoard(value => ({
-                ...value, oyuncu1: {
-                  ...value.oyuncu1,
-                  toplam: value.oyuncu1.toplam + 1
-                }
-              }))
-            }
-            else {
-              setGamerLine("1")
-              setScoreBoard(value => ({
-                ...value, oyuncu2: {
-                  ...value.oyuncu2,
-                  toplam: value.oyuncu2.toplam + 1
-                }
-              }))
-            }
 
-          }, 700);
-        }
         setMoveCount(move => move + 1)
       }
 
@@ -237,15 +257,35 @@ function App() {
 
   const handleGamerCount = (e) => {
     setSettings(setting => ({ ...setting, gamercount: e.target.value }))
+
   }
 
 
 
   return (
     <div className="app-container">
+      <div className={"finish-modal " + gameFinish[0]}></div>
+      <div className={"finish-modal-message " + gameFinish[1]}>
+        1. Oyuncu
+        <hr />
+        <p>Toplam Hamle : {scoreBoard.oyuncu1.toplam}</p>
+        <p>Başarılı Hamle : {scoreBoard.oyuncu1.basarili}</p>
+        <p>Başarısız Hamle : {scoreBoard.oyuncu1.toplam - scoreBoard.oyuncu1.basarili}</p>
+
+        {settings.gamercount === "2" && <span>
+          2. Oyuncu
+          <hr />
+          <p>Toplam Hamle : {scoreBoard.oyuncu2.toplam}</p>
+          <p>Başarılı Hamle : {scoreBoard.oyuncu2.basarili}</p>
+          <p>Başarısız Hamle : {scoreBoard.oyuncu2.toplam - scoreBoard.oyuncu1.basarili}</p>
+        </span>}
+
+
+        <button onClick={() => setGameFinish(["", ""])} >Kapat</button>
+      </div>
       <div className="app-game-container">
         {
-          //buttonShow&&<div className="app-game-floor"></div>
+          buttonShow && <div className="app-game-floor"></div>
         }
         {
           getSquare.map((index) => {

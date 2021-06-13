@@ -11,7 +11,71 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    position: relative;
 }
+
+.finish-modal{
+    z-index: 99;
+    width: 100%;
+    background-color: #000;
+    opacity: .5;
+    position: absolute;
+    transition: 300ms all;
+    height: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.finish-modal-message{
+    padding: 10px;
+    font-family: Arial, Helvetica, sans-serif;
+    color:#fff;
+    font-size: 17px;
+    z-index: 999;
+    position: absolute;
+    width: 200px;
+    height: 0;
+    border: 1px solid #fff;
+    left: -300px;
+    background-color: #444;
+    border-radius: 10px;
+    transition: 300ms all;
+    opacity: .8;
+}
+
+.finish-modal-message button{
+    padding: 8px 20px;
+    width: 100%;
+    cursor: pointer;
+    border-radius: 5px;
+    background-color: #444;
+    border: 1px solid white;
+    transition: 300ms all;
+    color: #fff;
+}
+
+.finish-modal-message button:hover {
+    background-color: #555;
+
+}
+
+.finish-modal-message button:active {
+    background-color: #888;
+}
+
+
+.finish-modal-message-show{
+    transform: translateX(-150px);
+    left: 50%;
+    height: fit-content;
+}
+
+.finish-modal-show{
+    height: 100%;
+}
+
+
 
 .app-game-container {
     perspective: 30em;
@@ -30,7 +94,7 @@ body {
     position: absolute;
     width: 200px;
     width: 100%;
-    z-index: 9999;
+    z-index: 9;
     height: 100%;
     margin: -10px;
 }
