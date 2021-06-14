@@ -1,3 +1,10 @@
+
+<p align="center">
+ <img src="https://github.com/yusufayhan0/reactaynisini-bul/ezgif-1-b4a29c44ef3c.gif" />
+</p>
+
+
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
