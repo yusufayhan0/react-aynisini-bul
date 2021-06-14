@@ -1,6 +1,6 @@
 
 <p align="center">
- <img src="https://github.com/yusufayhan0/react-aynisini-bul/ezgif-1-b4a29c44ef3c.gif" />
+ <img src="https://github.com/yusufayhan0/react-aynisini-bul/blob/master/ezgif-1-b4a29c44ef3c.gif" />
 </p>
 
 
