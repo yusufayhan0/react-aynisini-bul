@@ -4,15 +4,9 @@ import React, { useEffect, useState } from 'react'
 let colorsCharacter = "0123456789abcdef"
 function Square(props) {
 
-    //gamercount: "1"
-    //difficulty: "1"
-
-    const { gamesettings } = props
-
-    const { hideShow } = props
+    const { gamesettings,hideShow } = props
     const [getcolor, setColor] = useState("#444")
     const [isShow, setisShow] = useState(true)
-    const [change, setChange] = useState(false)
     const [showClass, setShowClass] = useState("square-own-hide")//square-own-hide
     let color = "#"
 
@@ -21,29 +15,28 @@ function Square(props) {
             color += colorsCharacter[Math.ceil(Math.random() * 15)]
         }
         setColor(color)
-        setChange(false)
     }
 
     useEffect(() => {
         if (props.finish) {
             setShowClass("square-own-hide")
+            setisShow(true)
+            setColor("#444")
             props.setFinish(false)
         }
     }, [props.finish])
 
     useEffect(() => {
-        setShowClass("square-own-hide")
+        //setShowClass("square-own-hide")
     }, [props.imagepath])
 
     useEffect(() => {
-
         if (gamesettings.difficulty !== "1") {
             createColor()
         }
         else {
             setColor("#444")
         }
-
     }, [gamesettings])
 
 

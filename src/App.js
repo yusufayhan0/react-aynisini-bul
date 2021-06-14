@@ -4,17 +4,37 @@ let imageHistory = []
 let imageCountHistory = Array(19).fill(0)
 function App() {
 
+  const imageList = [
+    "",
+    "adjust-solid.jpg",
+    "algolia-brands.jpg",
+    "angle-double-down-solid.jpg",
+    "angle-double-left-solid.jpg",
+    "arrow-alt-circle-right-regular.jpg",
+    "arrow-alt-circle-up-solid.jpg",
+    "arrows-alt-h-solid.jpg",
+    "backward-solid.jpg",
+    "bluetooth-brands.jpg",
+    "buromobelexperte-brands.jpg",
+    "carrot-solid.jpg",
+    "chevron-circle-up-solid.jpg",
+    "cog-solid.jpg",
+    "dharmachakra-solid.jpg",
+    "dot-circle-regular.jpg",
+    "ello-brands.jpg",
+    "empire-brands.jpg",
+    "exclamation-circle-solid.jpg"
+  ]
+
   const [tempSquare, setTempSquare] = useState([])
-  const [tempOkSquare, setTempOkSquare] = useState([])
   const [getSquare, setSquare] = useState([])
   const [hideShow, setHideShow] = useState([0, -1, -1])
-  const [historyTrueSquare, setHistoryTrueSquare] = useState([])
   const [image, setImage] = useState()
   const [settings, setSettings] = useState({
     gamercount: "1",
     difficulty: "1"
   })
-  const [gamerLine, setGamerLine] = useState("1")
+  const [gamerLine, setGamerLine] = useState("1")//sıranın kimde olduğunu tutar
   const [scoreBoard, setScoreBoard] = useState({
     oyuncu1: {
       toplam: 0,
@@ -35,10 +55,22 @@ function App() {
 
 
   const ref = useRef(1)
-  const scoreCount = useRef(0)
   const count = [];
 
   const defaultSettings = () => {
+    setGamerLine("1")
+    setScoreBoard({ oyuncu1: { toplam: 0, basarili: 0 }, oyuncu2: { toplam: 0, basarili: 0 } })
+    setMoveCount(0)
+    setTimeState([])
+    setStateCount(0)
+    setButtonShow(true)
+    setFinishState(true)
+    setGameFinish(["", ""])
+    setHideShow([0, -1, -1])
+    ref.current = 1
+    setTimeout(() => {
+      setImage(imageCreate())
+    },550);
 
   }
 
@@ -59,8 +91,7 @@ function App() {
   }, [])
 
   const handleStart = () => {
-    setStateCount(0)
-    setMoveCount(0)
+    defaultSettings()
     refTime.current = setInterval(setTime, 1000);
     setButtonShow(false)
   }
@@ -68,12 +99,8 @@ function App() {
   const handleFinish = () => {
     clearInterval(refTime.current)
     setButtonShow(true)
-    setFinishState(true)
     setGameFinish(["finish-modal-show", "finish-modal-message-show"])
-    setTimeout(() => {
-      setImage(imageCreate())
-    }, 250);
-
+    //setSettings({ gamercount: "1", difficulty: "1" })
 
   }
 
@@ -120,7 +147,7 @@ function App() {
                   ...value, oyuncu2: {
                     ...value.oyuncu2,
                     basarili: value.oyuncu2.basarili + 1,
-                    toplam: value.oyuncu1.toplam + 1
+                    toplam: value.oyuncu2.toplam + 1
                   }
                 }))
               }
@@ -131,7 +158,8 @@ function App() {
             setScoreBoard(value => ({
               ...value, oyuncu1: {
                 ...value.oyuncu1,
-                toplam: value.oyuncu1.toplam + 1
+                toplam: value.oyuncu1.toplam + 1,
+                basarili: value.oyuncu1.basarili + 1,
               }
             }))
           }
@@ -160,49 +188,31 @@ function App() {
 
             }, 700);
           }
+          else {
+            setGamerLine("1")
+            setScoreBoard(value => ({
+              ...value, oyuncu1: {
+                ...value.oyuncu1,
+                toplam: value.oyuncu1.toplam + 1
+              }
+            }))
+          }
           setTimeout(() => {
             setHideShow(value => [value[0] + 1, tempSquare[0], tempSquare[1]])
           }, 700);
         }
-
         setMoveCount(move => move + 1)
       }
-
     }
     else {
       setHideShow([0, -1, -1])
     }
+    console.log("tempSquare-tempSquare",tempSquare)
   }, [tempSquare])
 
   useEffect(() => {
-    console.log("scoreBoard", scoreBoard)
+    //console.log("scoreBoard", scoreBoard)
   }, [scoreBoard])
-
-  const imageList = [
-    "",
-    "adjust-solid.jpg",
-    "algolia-brands.jpg",
-    "angle-double-down-solid.jpg",
-    "angle-double-left-solid.jpg",
-    "arrow-alt-circle-right-regular.jpg",
-    "arrow-alt-circle-up-solid.jpg",
-    "arrows-alt-h-solid.jpg",
-    "backward-solid.jpg",
-    "bluetooth-brands.jpg",
-    "buromobelexperte-brands.jpg",
-    "carrot-solid.jpg",
-    "chevron-circle-up-solid.jpg",
-    "cog-solid.jpg",
-    "dharmachakra-solid.jpg",
-    "dot-circle-regular.jpg",
-    "ello-brands.jpg",
-    "empire-brands.jpg",
-    "exclamation-circle-solid.jpg"
-  ]
-
-
-
-
 
   const tempSq = (index, id) => {
     if (ref.current === 1) {
@@ -219,12 +229,9 @@ function App() {
     imageCountHistory = Array(19).fill(0)
     imageHistory = []
     let imageNo
-    let imageName
-    let isImage
     let isNext = true
     while (isNext) {
       imageNo = (Math.round(Math.random() * 17) + 1)
-      isImage = imageHistory.find(no => no === imageNo)
       if (imageCountHistory[imageNo] < 2) {
         imageHistory.push(imageNo)
         imageCountHistory[imageNo]++
@@ -242,9 +249,6 @@ function App() {
     setImage(imageCreate())
   }, [])
 
-  useEffect(() => {
-    console.log("image-image", image)
-  }, [image])
 
   const handleDifficulty = (e) => {
     setSettings(setting => ({ ...setting, difficulty: e.target.value }))
@@ -277,7 +281,7 @@ function App() {
           <hr />
           <p>Toplam Hamle : {scoreBoard.oyuncu2.toplam}</p>
           <p>Başarılı Hamle : {scoreBoard.oyuncu2.basarili}</p>
-          <p>Başarısız Hamle : {scoreBoard.oyuncu2.toplam - scoreBoard.oyuncu1.basarili}</p>
+          <p>Başarısız Hamle : {scoreBoard.oyuncu2.toplam - scoreBoard.oyuncu2.basarili}</p>
         </span>}
 
 
@@ -311,18 +315,18 @@ function App() {
         <p>Zorluk Derecesi</p>
         <div>
           <input type="radio" onChange={handleDifficulty} id="difficulty1" name="difficulty" value="3" />
-          <label for="difficulty1">Zor</label>
+          <label htmlFor="difficulty1">Zor</label>
           <input type="radio" onChange={handleDifficulty} id="difficulty2" name="difficulty" value="2" />
-          <label for="difficulty2">Orta</label>
+          <label htmlFor="difficulty2">Orta</label>
           <input type="radio" onChange={handleDifficulty} id="difficulty3" name="difficulty" value="1" defaultChecked />
-          <label for="difficulty3">Kolay</label>
+          <label htmlFor="difficulty3">Kolay</label>
         </div>
         <p>Oyuncu sayısı</p>
         <div>
           <input type="radio" id="gamer1" disabled={!buttonShow} onChange={handleGamerCount} name="gamercount" value="1" defaultChecked />
-          <label for="gamer1">Tek Kişilik</label>
+          <label htmlFor="gamer1">Tek Kişilik</label>
           <input type="radio" id="gamer2" disabled={!buttonShow} onChange={handleGamerCount} name="gamercount" value="2" />
-          <label for="gamer2">2 Kişilik</label>
+          <label htmlFor="gamer2">2 Kişilik</label>
         </div>
         <div>
           <p>{timeState[0]} : {timeState[1]}</p>
